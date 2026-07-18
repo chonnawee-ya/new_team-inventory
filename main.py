@@ -31,6 +31,12 @@ import argparse
 import sys
 from typing import Optional
 
+# บังคับให้ stdout/stderr เป็น UTF-8 เสมอ กัน UnicodeEncodeError / ข้อความไทย
+# เพี้ยนตอนรันบน Windows ที่ console ไม่ได้ตั้งเป็น UTF-8 (เช่น cp874, cp1252)
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 from storage import DEFAULT_DATA_FILE
 from commands import add_item, export_items, list_items, search_items, update_item
 

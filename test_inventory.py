@@ -5,6 +5,7 @@ test_inventory.py — unit test สำหรับ inventory.py
 """
 
 import json
+import os
 import subprocess
 import sys
 import unittest
@@ -23,10 +24,16 @@ class InventoryCLITestCase(unittest.TestCase):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def run_cli(self, *args):
+        # บังคับ UTF-8 ทั้งฝั่งเขียน (child process) และฝั่งอ่าน (subprocess.run)
+        # กันข้อความไทยเพี้ยนหรือ crash บน Windows ที่ console ไม่ใช่ UTF-8
+        env = os.environ.copy()
+        env["PYTHONUTF8"] = "1"
         return subprocess.run(
             [sys.executable, str(self.script), "--data", str(self.data_file), *args],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            env=env,
         )
 
     # ---- US-01: list ----
